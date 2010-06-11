@@ -23,11 +23,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using TidyManaged.Interop;
-using System.Globalization;
 
 namespace TidyManaged
 {
@@ -162,8 +163,23 @@ namespace TidyManaged
 		/// </summary>
 		public bool AnchorAsName
 		{
-			get { return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyAnchorAsName); }
-			set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyAnchorAsName, value); }
+			// Not available before until 18 Jun 2008
+			get
+			{
+				if (this.ReleaseDate < new DateTime(2008, 6, 18))
+				{
+					Trace.WriteLine("AnchorAsName is not supported by your version of tidylib - ignoring.");
+					return true;
+				}
+				return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyAnchorAsName);
+			}
+			set
+			{
+				if (this.ReleaseDate < new DateTime(2008, 6, 18))
+					Trace.WriteLine("AnchorAsName is not supported by your version of tidylib - ignoring.");
+				else
+					PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyAnchorAsName, value);
+			}
 		}
 
 		/// <summary>
@@ -401,8 +417,23 @@ namespace TidyManaged
 		/// </summary>
 		public AutoBool MergeSpans
 		{
-			get { return (AutoBool) PInvoke.tidyOptGetInt(this.handle, TidyOptionId.TidyMergeSpans); }
-			set { PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidyMergeSpans, (uint) value); }
+			// Not available before until 13 Aug 2007
+			get
+			{
+				if (this.ReleaseDate < new DateTime(2007, 8, 13))
+				{
+					Trace.WriteLine("MergeSpans is not supported by your version of tidylib - ignoring.");
+					return AutoBool.No;
+				}
+				return (AutoBool) PInvoke.tidyOptGetInt(this.handle, TidyOptionId.TidyMergeSpans);
+			}
+			set
+			{
+				if (this.ReleaseDate < new DateTime(2007, 8, 13))
+					Trace.WriteLine("MergeSpans is not supported by your version of tidylib - ignoring.");
+				else
+					PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidyMergeSpans, (uint) value);
+			}
 		}
 
 #if SUPPORT_ASIAN_ENCODINGS
@@ -547,27 +578,20 @@ namespace TidyManaged
 		/// </summary>
 		public AutoBool OutputBodyOnly
 		{
+			// This option was changed from a Bool to an AutoBool on 24 May 2007.
 			get
 			{
 				if (this.ReleaseDate < new DateTime(2007, 5, 24))
-				{
 					return (PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyBodyOnly) ? AutoBool.Yes : AutoBool.No);
-				}
 				else
-				{
 					return (AutoBool) PInvoke.tidyOptGetInt(this.handle, TidyOptionId.TidyBodyOnly);
-				}
 			}
 			set
 			{
 				if (this.ReleaseDate < new DateTime(2007, 5, 24))
-				{
 					PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyBodyOnly, (value == AutoBool.Yes));
-				}
 				else
-				{
 					PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidyBodyOnly, (uint) value);
-				}
 			}
 		}
 
@@ -698,8 +722,23 @@ namespace TidyManaged
 		/// </summary>
 		public SortStrategy AttributeSortType
 		{
-			get { return (SortStrategy) PInvoke.tidyOptGetInt(this.handle, TidyOptionId.TidySortAttributes); }
-			set { PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidySortAttributes, (uint) value); }
+			// Not available before until 6 Jun 2007
+			get
+			{
+				if (this.ReleaseDate < new DateTime(2007, 6, 12))
+				{
+					Trace.WriteLine("AttributeSortType is not supported by your version of tidylib - ignoring.");
+					return SortStrategy.None;
+				}
+				return (SortStrategy) PInvoke.tidyOptGetInt(this.handle, TidyOptionId.TidySortAttributes);
+			}
+			set
+			{
+				if (this.ReleaseDate < new DateTime(2007, 6, 12))
+					Trace.WriteLine("AttributeSortType is not supported by your version of tidylib - ignoring.");
+				else
+					PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidySortAttributes, (uint) value);
+			}
 		}
 
 		/// <summary>
