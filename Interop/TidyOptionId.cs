@@ -31,15 +31,12 @@ namespace TidyManaged.Interop
 		TidyIndentSpaces,    /*< Indentation n spaces */
 		TidyWrapLen,         /*< Wrap margin */
 		TidyTabSize,         /*< Expand tabs to n spaces */
-
 		TidyCharEncoding,    /*< In/out character encoding */
 		TidyInCharEncoding,  /*< Input character encoding (if different) */
 		TidyOutCharEncoding, /*< Output character encoding (if different) */
 		TidyNewline,         /*< Output line ending (default to platform) */
-
 		TidyDoctypeMode,     /*< See doctype property */
 		TidyDoctype,         /*< User specified doctype */
-
 		TidyDuplicateAttrs,  /*< Keep first or last duplicate attribute */
 		TidyAltText,         /*< Default text for alt attribute */
 
@@ -108,35 +105,30 @@ namespace TidyManaged.Interop
 		TidyJoinClasses,     /*< Join multiple class attributes */
 		TidyJoinStyles,      /*< Join multiple style attributes */
 		TidyEscapeCdata,     /*< Replace <![CDATA[]]> sections with escaped text */
-
-#if (!NO_SUPPORT_ASIAN_ENCODINGS)
-  TidyLanguage,        /*< Language property: not used for anything yet */
-  TidyNCR,             /*< Allow numeric character references */
+#if SUPPORT_ASIAN_ENCODINGS
+		TidyLanguage,        /*< Language property: not used for anything yet */
+		TidyNCR,             /*< Allow numeric character references */
 #else
 		TidyLanguageNotUsed,
 		TidyNCRNotUsed,
 #endif
-#if (!NO_SUPPORT_UTF16_ENCODINGS)
-  TidyOutputBOM,      /*< Output a Byte Order Mark (BOM) for UTF-16 encodings */
-                      /*< auto: if input stream has BOM, we output a BOM */
+#if SUPPORT_UTF16_ENCODINGS
+		TidyOutputBOM,      /**< Output a Byte Order Mark (BOM) for UTF-16 encodings */
+		                    /**< auto: if input stream has BOM, we output a BOM */
 #else
 		TidyOutputBOMNotUsed,
 #endif
-
 		TidyReplaceColor,    /*< Replace hex color attribute values with names */
 		TidyCSSPrefix,       /*< CSS class naming for -clean option */
-
 		TidyInlineTags,      /*< Declared inline tags */
 		TidyBlockTags,       /*< Declared block tags */
 		TidyEmptyTags,       /*< Declared empty tags */
 		TidyPreTags,         /*< Declared pre tags */
-
-		TidyAccessibilityCheckLevel, /*< Accessibility check level 
+		TidyAccessibilityCheckLevel, /*< Accessibility check level
                                    0 (old style), or 1, 2, 3 */
-
 		TidyVertSpace,       /*< degree to which markup is spread out vertically */
-#if (!NO_SUPPORT_ASIAN_ENCODINGS)
-  TidyPunctWrap,       /*< consider punctuation and breaking spaces for wrapping */
+#if SUPPORT_ASIAN_ENCODINGS
+		TidyPunctWrap,       /*< consider punctuation and breaking spaces for wrapping */
 #else
 		TidyPunctWrapNotUsed,
 #endif

@@ -27,6 +27,7 @@ using System.Text;
 using System.IO;
 using System.Runtime.InteropServices;
 using TidyManaged.Interop;
+using System.Globalization;
 
 namespace TidyManaged
 {
@@ -97,12 +98,34 @@ namespace TidyManaged
 
 		#region Properties
 
+		DateTime? _ReleaseDate;
+		static readonly object releaseDateLock = new object();
 		/// <summary>
-		/// Gets the release data of the Tidy library.
+		/// Gets the release date of the underlying Tidy library.
 		/// </summary>
-		public string TidyReleaseDate
+		public DateTime ReleaseDate
 		{
-			get { return Marshal.PtrToStringAnsi(PInvoke.tidyReleaseDate()); }
+			get
+			{
+				lock (releaseDateLock)
+				{
+					if (!_ReleaseDate.HasValue)
+					{
+						DateTime val = DateTime.MinValue;
+						string release = Marshal.PtrToStringAnsi(PInvoke.tidyReleaseDate());
+						if (release != null)
+						{
+							string[] tokens = release.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+							if (tokens.Length >= 3)
+							{
+								DateTime.TryParseExact(tokens[0] + " " + tokens[1] + " " + tokens[2], "d MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out val);
+							}
+						}
+						_ReleaseDate = val;
+					}
+					return _ReleaseDate.Value;
+				}
+			}
 		}
 
 		#region HTML, XHTML, XML Options
@@ -382,6 +405,7 @@ namespace TidyManaged
 			set { PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidyMergeSpans, (uint) value); }
 		}
 
+#if SUPPORT_ASIAN_ENCODINGS
 		/// <summary>
 		/// [ncr] Gets or sets whether Tidy should allow numeric character references. Defaults to true.
 		/// </summary>
@@ -390,6 +414,7 @@ namespace TidyManaged
 			get { return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyNCR); }
 			set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyNCR, value); }
 		}
+#endif
 
 		/// <summary>
 		/// [new-blocklevel-tags] Gets or sets new block-level tags. This option takes a space or comma separated list of tag names. Unless you declare new tags, Tidy will refuse to generate a tidied file if the input includes previously unknown tags. Note you can't change the content model for elements such as &lt;TABLE&gt;, &lt;UL&gt;, &lt;OL&gt; and &lt;DL&gt;. This option is ignored in XML mode.
@@ -522,8 +547,28 @@ namespace TidyManaged
 		/// </summary>
 		public AutoBool OutputBodyOnly
 		{
-			get { return (AutoBool) PInvoke.tidyOptGetInt(this.handle, TidyOptionId.TidyBodyOnly); }
-			set { PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidyBodyOnly, (uint) value); }
+			get
+			{
+				if (this.ReleaseDate < new DateTime(2007, 5, 24))
+				{
+					return (PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyBodyOnly) ? AutoBool.Yes : AutoBool.No);
+				}
+				else
+				{
+					return (AutoBool) PInvoke.tidyOptGetInt(this.handle, TidyOptionId.TidyBodyOnly);
+				}
+			}
+			set
+			{
+				if (this.ReleaseDate < new DateTime(2007, 5, 24))
+				{
+					PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyBodyOnly, (value == AutoBool.Yes));
+				}
+				else
+				{
+					PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidyBodyOnly, (uint) value);
+				}
+			}
 		}
 
 		/// <summary>
@@ -637,6 +682,7 @@ namespace TidyManaged
 			set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyShowMarkup, value); }
 		}
 
+#if SUPPORT_ASIAN_ENCODINGS
 		/// <summary>
 		/// [punctuation-wrap] Gets or sets whether Tidy should line wrap after some Unicode or Chinese punctuation characters. Defaults to false.
 		/// </summary>
@@ -645,6 +691,7 @@ namespace TidyManaged
 			get { return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyPunctWrap); }
 			set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyPunctWrap, value); }
 		}
+#endif
 
 		/// <summary>
 		/// [sort-attributes] Gets or sets how Tidy should sort attributes within an element using the specified sort algorithm. If set to Alpha, the algorithm is an ascending alphabetic sort. Defaults to None.
@@ -776,6 +823,7 @@ namespace TidyManaged
 			set { PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidyNewline, (uint) value); }
 		}
 
+#if SUPPORT_UTF16_ENCODINGS
 		/// <summary>
 		/// [output-bom] Gets or sets whether Tidy should write a Unicode Byte Order Mark character (BOM; also known as Zero Width No-Break Space; has value of U+FEFF) to the beginning of the output; only for UTF-8 and UTF-16 output encodings. If set to "auto", this option causes Tidy to write a BOM to the output only if a BOM was present at the beginning of the input. A BOM is always written for XML/XHTML output using UTF-16 output encodings. Defaults to "Auto".
 		/// </summary>
@@ -784,6 +832,7 @@ namespace TidyManaged
 			get { return (AutoBool) PInvoke.tidyOptGetInt(this.handle, TidyOptionId.TidyOutputBOM); }
 			set { PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidyOutputBOM, (uint) value); }
 		}
+#endif
 
 		/// <summary>
 		/// [output-encoding] Gets or sets character encoding Tidy uses for the output. See CharacterEncoding for more info. May only be different from input-encoding for Latin encodings (ascii, latin0, latin1, mac, win1252, ibm858). Defaults to "Ascii".
@@ -922,6 +971,7 @@ namespace TidyManaged
 		{
 			if (!cleaned) throw new InvalidOperationException("CleanAndRepair() must be called before Save().");
 
+			AutoBool outputBOMTemp = this.OutputByteOrderMark;
 			this.OutputByteOrderMark = AutoBool.No;
 
 			uint bufferLength = 1;
@@ -930,8 +980,7 @@ namespace TidyManaged
 			do
 			{
 				// Buffer was too small - bufferLength should now be the required length, so try again...
-				if (handle.IsAllocated)
-					handle.Free();
+				if (handle.IsAllocated) handle.Free();
 
 				// this setting appears to be reset by libtidy after calling tidySaveString; we need to set it each time
 				this.OutputCharacterEncoding = EncodingType.Utf8;
@@ -942,6 +991,7 @@ namespace TidyManaged
 
 			handle.Free();
 
+			this.OutputByteOrderMark = outputBOMTemp;
 			return Encoding.UTF8.GetString(htmlBytes);
 		}
 
