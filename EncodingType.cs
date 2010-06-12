@@ -37,13 +37,13 @@ namespace TidyManaged
 		MacRoman = 6,
 		Win1252 = 7,
 		Ibm858 = 8,
-#if (!NO_SUPPORT_UTF16_ENCODINGS)
+#if SUPPORT_UTF16_ENCODINGS
 		Utf16LittleEndian = 9,
 		Utf16BigEndian = 10,
 		Utf16 = 11,
 #endif
-#if (!NO_SUPPORT_ASIAN_ENCODINGS)
-#if (!NO_SUPPORT_UTF16_ENCODINGS)
+#if SUPPORT_ASIAN_ENCODINGS
+#if SUPPORT_UTF16_ENCODINGS
 		Big5 = 12,
 		ShiftJIS = 13
 #else

@@ -39,47 +39,24 @@ namespace TidyManaged
 	{
 		#region Constructors
 
-		/// <summary>
-		/// Creates a new instance from the supplied file.
-		/// </summary>
-		/// <param name="file">A <see cref="System.IO.FileInfo"/> instance representing the HTML file to be processed.</param>
-		public Document(FileInfo file)
-			: this()
-		{
-			if (!file.Exists) throw new FileNotFoundException();
-			this.fileName = file.FullName;
-			this.parseType = ParseType.FileName;
-		}
-
-		/// <summary>
-		/// Creates a new instance from the supplied HTML snippet.
-		/// </summary>
-		/// <param name="html">The HTML to be processed.</param>
-		public Document(string html)
-			: this()
-		{
-			this.html = html;
-			this.parseType = ParseType.Html;
-		}
-
-		/// <summary>
-		/// Creates a new instance from the supplied stream.
-		/// </summary>
-		/// <param name="fileName">The stream containing the HTML data to process.</param>
-		public Document(Stream stream)
-			: this()
-		{
-			if (stream == null) throw new ArgumentNullException("stream");
-			if (!stream.CanRead) throw new ArgumentException("Stream must be readable.");
-			if (!stream.CanSeek) throw new ArgumentException("Stream must be seekable.");
-			this.stream = stream;
-			this.parseType = ParseType.Stream;
-		}
-
 		Document()
 		{
 			this.handle = PInvoke.tidyCreate();
 			this.disposed = false;
+		}
+
+		Document(string htmlString)
+			: this()
+		{
+			this.htmlString = htmlString;
+			this.fromString = true;
+		}
+
+
+		Document(Stream stream)
+			: this()
+		{
+			this.stream = stream;
 		}
 
 		#endregion
@@ -87,11 +64,9 @@ namespace TidyManaged
 		#region Fields
 
 		IntPtr handle;
-
-		ParseType parseType;
-		string fileName;
-		string html;
 		Stream stream;
+		string htmlString;
+		bool fromString;
 		bool disposed;
 		bool cleaned;
 
@@ -965,41 +940,24 @@ namespace TidyManaged
 		#region Methods
 
 		/// <summary>
-		/// Executes configured cleanup and repair operations on parsed markup.
+		/// Parses input markup, and executes configured cleanup and repair operations.
 		/// </summary>
 		public void CleanAndRepair()
 		{
-			switch (this.parseType)
+			if (fromString)
 			{
-				case ParseType.FileName:
-					PInvoke.tidyParseFile(this.handle, this.fileName);
-					break;
-
-				case ParseType.Html:
-					this.InputCharacterEncoding = EncodingType.Utf8;
-					byte[] htmlBytes = Encoding.UTF8.GetBytes(html);
-					GCHandle handle = GCHandle.Alloc(htmlBytes, GCHandleType.Pinned);
-					PInvoke.tidyParseString(this.handle, handle.AddrOfPinnedObject());
-					handle.Free();
-					break;
-
-				case ParseType.Stream:
-					InputSource input = new InputSource(this.stream);
-					PInvoke.tidyParseSource(this.handle, ref input.TidyInputSource);
-					break;
+				EncodingType tempEnc = this.InputCharacterEncoding;
+				this.InputCharacterEncoding = EncodingType.Utf8;
+				PInvoke.tidyParseString(this.handle, this.htmlString);
+				this.InputCharacterEncoding = tempEnc;
+			}
+			else
+			{
+				InputSource input = new InputSource(this.stream);
+				PInvoke.tidyParseSource(this.handle, ref input.TidyInputSource);
 			}
 			PInvoke.tidyCleanAndRepair(this.handle);
 			cleaned = true;
-		}
-
-		/// <summary>
-		/// Saves the processed markup to a file.
-		/// </summary>
-		/// <param name="fileName">The full filesystem path of the file to save the markup to.</param>
-		public void Save(string fileName)
-		{
-			if (!cleaned) throw new InvalidOperationException("CleanAndRepair() must be called before Save().");
-			PInvoke.tidySaveFile(this.handle, fileName);
 		}
 
 		/// <summary>
@@ -1008,9 +966,12 @@ namespace TidyManaged
 		/// <returns>A string containing the processed markup.</returns>
 		public string Save()
 		{
-			if (!cleaned) throw new InvalidOperationException("CleanAndRepair() must be called before Save().");
+			if (!cleaned)
+				throw new InvalidOperationException("CleanAndRepair() must be called before Save().");
 
-			AutoBool outputBOMTemp = this.OutputByteOrderMark;
+			var tempEnc = this.CharacterEncoding;
+			var tempBOM = this.OutputByteOrderMark;
+			this.OutputCharacterEncoding = EncodingType.Utf8;
 			this.OutputByteOrderMark = AutoBool.No;
 
 			uint bufferLength = 1;
@@ -1030,15 +991,37 @@ namespace TidyManaged
 
 			handle.Free();
 
-			this.OutputByteOrderMark = outputBOMTemp;
+			this.OutputCharacterEncoding = tempEnc;
+			this.OutputByteOrderMark = tempBOM;
 			return Encoding.UTF8.GetString(htmlBytes);
 		}
 
+		/// <summary>
+		/// Saves the processed markup to a file.
+		/// </summary>
+		/// <param name="filePath">The full filesystem path of the file to save the markup to.</param>
+		public void Save(string filePath)
+		{
+			if (!cleaned)
+				throw new InvalidOperationException("CleanAndRepair() must be called before Save().");
+
+			PInvoke.tidySaveFile(this.handle, filePath);
+		}
+
+		/// <summary>
+		/// Saves the processed markup to the supplied stream.
+		/// </summary>
+		/// <param name="Stream">A <see cref="System.IO.Stream"/> to write the markup to.</param>
 		public void Save(Stream stream)
 		{
-			if (!cleaned) throw new InvalidOperationException("CleanAndRepair() must be called before Save().");
+			if (!cleaned)
+				throw new InvalidOperationException("CleanAndRepair() must be called before Save().");
+
+			EncodingType tempEnc = this.OutputCharacterEncoding;
+			if (fromString) this.OutputCharacterEncoding = EncodingType.Utf8;
 			OutputSink sink = new OutputSink(stream);
 			PInvoke.tidySaveSink(this.handle, ref sink.TidyOutputSink);
+			if (fromString) this.OutputCharacterEncoding = tempEnc;
 		}
 
 		#endregion
@@ -1046,12 +1029,43 @@ namespace TidyManaged
 		#region Static Methods
 
 		/// <summary>
-		/// Creates a new <see cref="Document"/> instance from the supplied file.
+		/// Creates a new <see cref="Document"/> instance from a <see cref="System.String"/> containing HTML.
 		/// </summary>
-		/// <param name="fileName">The full filesystem path of the HTML document to be precessed.</param>
-		public Document FromFile(string fileName)
+		/// <param name="htmlString">The HTML string to be processed.</param>
+		public static Document FromString(string htmlString)
 		{
-			return new Document(new FileInfo(fileName));
+			if (htmlString == null)
+				throw new ArgumentNullException("htmlString");
+
+			return new Document(htmlString);
+		}
+
+		/// <summary>
+		/// Creates a new <see cref="Document"/> instance from a file.
+		/// </summary>
+		/// <param name="filePath">The full filesystem path of the HTML document to be processed.</param>
+		public static Document FromFile(string filePath)
+		{
+			if (!File.Exists(filePath))
+				throw new FileNotFoundException("File not found.", filePath);
+
+			return new Document(new FileStream(filePath, FileMode.Open));
+		}
+
+		/// <summary>
+		/// Creates a new <see cref="Document"/> instance from a <see cref="System.IO.Stream"/> instance.
+		/// </summary>
+		/// <param name="stream">A <see cref="System.IO.Stream"/> instance containing the HTML document to be processed.</param>
+		public static Document FromStream(Stream stream)
+		{
+			if (stream == null)
+				throw new ArgumentNullException("stream");
+			if (!stream.CanRead)
+				throw new ArgumentException("Stream must be readable.");
+			if (!stream.CanSeek)
+				throw new ArgumentException("Stream must be seekable.");
+
+			return new Document(stream);
 		}
 
 		#endregion
@@ -1077,17 +1091,6 @@ namespace TidyManaged
 				this.stream = null;
 				this.disposed = true;
 			}
-		}
-
-		#endregion
-
-		#region Inner types
-
-		enum ParseType
-		{
-			FileName,
-			Html,
-			Stream
 		}
 
 		#endregion

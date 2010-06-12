@@ -59,7 +59,7 @@ namespace TidyManaged.Interop
 		internal static extern int tidyParseFile(IntPtr tdoc, string filename);
 
 		[DllImport("libtidy.dll")]
-		internal static extern int tidyParseString(IntPtr tdoc, IntPtr content);
+		internal static extern int tidyParseString(IntPtr tdoc, string content);
 
 		[DllImport("libtidy.dll")]
 		internal static extern int tidyParseSource(IntPtr tdoc, ref TidyInputSource source);
@@ -68,7 +68,7 @@ namespace TidyManaged.Interop
 		internal static extern int tidyCleanAndRepair(IntPtr tdoc);
 
 		[DllImport("libtidy.dll")]
-		internal static extern int tidySaveFile(IntPtr tdoc, string filnam);
+		internal static extern int tidySaveFile(IntPtr tdoc, string filname);
 
 		[DllImport("libtidy.dll")]
 		internal static extern int tidySaveString(IntPtr tdoc, IntPtr buffer, ref uint buflen);
