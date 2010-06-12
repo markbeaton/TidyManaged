@@ -48,6 +48,9 @@ namespace TidyManaged
 		/// </summary>
 		Loose,
 
+		/// <summary>
+		/// User-specified doctype.
+		/// </summary>
 		User
 	}
 }

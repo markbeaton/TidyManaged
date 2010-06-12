@@ -28,27 +28,95 @@ namespace TidyManaged
 	/// </summary>
 	public enum EncodingType
 	{
+		/// <summary>
+		/// No or unknown encoding.
+		/// </summary>
 		Raw = 0,
+
+		/// <summary>
+		/// The American Standard Code for Information Interchange (ASCII) encoding scheme.
+		/// </summary>
 		Ascii = 1,
+
+		/// <summary>
+		/// The ISO/IEC 8859-15 encoding scheme, also knows as Latin-0 and Latin-9.
+		/// </summary>
 		Latin0 = 2,
+
+		/// <summary>
+		/// The ISO/IEC 8859-1 encoding scheme, also knows as Latin-1.
+		/// </summary>
 		Latin1 = 3,
+
+		/// <summary>
+		/// The UTF-8 encoding scheme.
+		/// </summary>
 		Utf8 = 4,
+
+		/// <summary>
+		/// The ISO/IEC 2022 encoding scheme.
+		/// </summary>
 		Iso2022 = 5,
+
+		/// <summary>
+		/// The MacRoman encoding scheme.
+		/// </summary>
 		MacRoman = 6,
+
+		/// <summary>
+		/// The Windows-1252 encoding scheme.
+		/// </summary>
 		Win1252 = 7,
+
+		/// <summary>
+		/// The Code page 858 encoding scheme, also know as CP 858, IBM 858, or OEM 858.
+		/// </summary>
 		Ibm858 = 8,
+
 #if SUPPORT_UTF16_ENCODINGS
+
+		/// <summary>
+		/// The UTF-16LE (Little Endian) encoding scheme.
+		/// </summary>
 		Utf16LittleEndian = 9,
+
+		/// <summary>
+		/// The UTF-16BE (Big Endian) encoding scheme.
+		/// </summary>
 		Utf16BigEndian = 10,
+
+		/// <summary>
+		/// The UTF-16 encoding scheme, with endianess detected using a BOM.
+		/// </summary>
 		Utf16 = 11,
+
 #endif
+
 #if SUPPORT_ASIAN_ENCODINGS
 #if SUPPORT_UTF16_ENCODINGS
+
+		/// <summary>
+		/// The Big-5 or Big5 encoding scheme, used in Taiwan, Hong Kong, and Macau for Traditional Chinese characters.
+		/// </summary>
 		Big5 = 12,
+
+		/// <summary>
+		/// The Shift JIS encoding scheme for Japanese characters.
+		/// </summary>
 		ShiftJIS = 13
+
 #else
+
+		/// <summary>
+		/// The Big-5 or Big5 encoding scheme, used in Taiwan, Hong Kong, and Macau for Traditional Chinese characters.
+		/// </summary>
 		Big5 = 9,
+
+		/// <summary>
+		/// The Shift JIS encoding scheme for Japanese characters.
+		/// </summary>
 		ShiftJIS = 10
+
 #endif
 #endif
 	}

@@ -1011,7 +1011,7 @@ namespace TidyManaged
 		/// <summary>
 		/// Saves the processed markup to the supplied stream.
 		/// </summary>
-		/// <param name="Stream">A <see cref="System.IO.Stream"/> to write the markup to.</param>
+		/// <param name="stream">A <see cref="System.IO.Stream"/> to write the markup to.</param>
 		public void Save(Stream stream)
 		{
 			if (!cleaned)
@@ -1072,12 +1072,19 @@ namespace TidyManaged
 
 		#region IDisposable Members
 
+		/// <summary>
+		/// Disposes of all unmanaged resources.
+		/// </summary>
 		public void Dispose()
 		{
 			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
 
+		/// <summary>
+		/// Disposes of all unmanaged resources.
+		/// </summary>
+		/// <param name="disposing">Indicates whether the the document is already being disposed of.</param>
 		protected virtual void Dispose(bool disposing)
 		{
 			if (!this.disposed)
