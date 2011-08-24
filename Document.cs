@@ -37,6 +37,8 @@ namespace TidyManaged
 	/// </summary>
 	public class Document : IDisposable
 	{
+        internal static IPInvoke PInvoke = IntPtr.Size == 8 ? new PInvoke64() as IPInvoke : new PInvoke32() as IPInvoke;
+
 		#region Constructors
 
 		Document()
