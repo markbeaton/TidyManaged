@@ -76,6 +76,9 @@ namespace TidyManaged.Interop
 		[DllImport("libtidy64.dll")]
 		internal static extern int tidySaveSink(IntPtr tdoc, ref TidyOutputSink sink);
 
+        [DllImport("libtidy64.dll")]
+        internal static extern int tidySetErrorSink(IntPtr tdoc, ref TidyOutputSink sink);
+
 		internal static string tidyOptGetValueString(IntPtr tdoc, TidyOptionId optId)
 		{
 			return Marshal.PtrToStringAnsi(tidyOptGetValue(tdoc, optId));
@@ -166,6 +169,11 @@ namespace TidyManaged.Interop
         int IPInvoke.tidySaveString(IntPtr tdoc, IntPtr buffer, ref uint buflen)
         {
             return tidySaveString(tdoc, buffer, ref buflen);
+        }
+
+        int IPInvoke.tidySetErrorSink(IntPtr tdoc, ref TidyOutputSink sink)
+        {
+            return tidySetErrorSink(tdoc, ref sink);
         }
 
         #endregion

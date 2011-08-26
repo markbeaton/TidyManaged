@@ -20,5 +20,6 @@ namespace TidyManaged.Interop
         int tidySaveFile(IntPtr tdoc, string filname);
         int tidySaveSink(IntPtr tdoc, ref TidyOutputSink sink);
         int tidySaveString(IntPtr tdoc, IntPtr buffer, ref uint buflen);
+        int tidySetErrorSink(IntPtr tdoc, ref TidyOutputSink sink);
     }
 }

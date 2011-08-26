@@ -941,26 +941,50 @@ namespace TidyManaged
 
 		#region Methods
 
-		/// <summary>
-		/// Parses input markup, and executes configured cleanup and repair operations.
-		/// </summary>
-		public void CleanAndRepair()
+        /// <summary>
+        /// Parses input markup, and executes configured cleanup and repair operations.
+        /// </summary>
+        /// <returns>A log of the errors encountered during the CleanAndRepair operation.</returns>
+		public string CleanAndRepair()
 		{
-			if (fromString)
-			{
-				EncodingType tempEnc = this.InputCharacterEncoding;
-				this.InputCharacterEncoding = EncodingType.Utf8;
-				PInvoke.tidyParseString(this.handle, this.htmlString);
-				this.InputCharacterEncoding = tempEnc;
-			}
-			else
-			{
-				InputSource input = new InputSource(this.stream);
-				PInvoke.tidyParseSource(this.handle, ref input.TidyInputSource);
-			}
-			PInvoke.tidyCleanAndRepair(this.handle);
-			cleaned = true;
+            using (Stream stream = new MemoryStream())
+            {
+                CleanAndRepair(stream);
+                stream.Seek(0, SeekOrigin.Begin);
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
 		}
+
+        /// <summary>
+        /// Parses input markup, and executes configured cleanup and repair operations.
+        /// </summary>
+        /// <param name="logStream">A stream to which errors encountered during the CleanAndRepair operation will be written to.</param>
+        public void CleanAndRepair(Stream logStream)
+        {
+            //Config Error
+            EncodingType tempOutEnc = this.OutputCharacterEncoding;
+            this.OutputCharacterEncoding = EncodingType.Utf8;
+            OutputSink sink = new OutputSink(logStream);
+            PInvoke.tidySetErrorSink(this.handle, ref sink.TidyOutputSink);
+            if (fromString)
+            {
+                EncodingType tempEnc = this.InputCharacterEncoding;
+                this.InputCharacterEncoding = EncodingType.Utf8;
+                PInvoke.tidyParseString(this.handle, this.htmlString);
+                this.InputCharacterEncoding = tempEnc;
+            }
+            else
+            {
+                InputSource input = new InputSource(this.stream);
+                PInvoke.tidyParseSource(this.handle, ref input.TidyInputSource);
+            }
+            PInvoke.tidyCleanAndRepair(this.handle);
+            this.OutputCharacterEncoding = tempOutEnc;
+            cleaned = true;
+        }
 
 		/// <summary>
 		/// Saves the processed markup to a string.
