@@ -8,7 +8,13 @@ I'm not going to explain Tidy's "raison d'être" - please read [Dave Raggett's o
 
 This wrapper is written in C#, and makes use of .NET platform invoke (p/invoke) functionality to interoperate with the Tidy library "libtidy" (written in portable ANSI C).
 
-Therefore, you'll also need a build of the binary appropriate for your platform. If you're after a 32 or 64 bit Windows build, or you want a more recent build for Mac OS X than the one that is bundled with the OS, visit the [downloads page](http://github.com/markbeaton/TidyManaged/downloads) at GitHub. Otherwise, grab the latest source from the [SourceForge project](http://tidy.sourceforge.net/), and roll your own.
+Therefore, you'll also need a build of the binary appropriate for your platform. If you're after a 32 or 64 bit Windows build, or you want a more recent build for Mac OS X than the one that is bundled with the OS, try these:
+
+- [Windows 32-bit build](http://wemakeapps.net/downloads/TidyManaged/libtidy.dll.Win32.zip)
+- [Windows 64-bit build](http://wemakeapps.net/downloads/TidyManaged/libtidy.dll.Win64.zip)
+- [Mac x64/x86/PPC fat binary](http://wemakeapps.net/downloads/TidyManaged/libtidy.dylib.zip) - this is a newer build (25 March 2009) than the version included in default OS X installations.
+
+Otherwise, grab the latest source from the [SourceForge project](http://tidy.sourceforge.net/), and roll your own.
 
 ## Sample Usage
 
