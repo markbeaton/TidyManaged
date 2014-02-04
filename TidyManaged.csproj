@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -45,7 +45,9 @@
     <Compile Include="Document.cs" />
     <Compile Include="EncodingType.cs" />
     <Compile Include="InputSource.cs" />
-    <Compile Include="Interop\PInvoke.cs" />
+    <Compile Include="Interop\PInvoke64.cs" />
+    <Compile Include="Interop\IPInvoke.cs" />
+    <Compile Include="Interop\PInvoke32.cs" />
     <Compile Include="Interop\TidyEOFFunc.cs" />
     <Compile Include="Interop\TidyGetByteFunc.cs" />
     <Compile Include="Interop\TidyInputSource.cs" />
