@@ -8,8 +8,8 @@ Minimum version of the supported Tidy HTML5 library is [5.0.0](https://github.co
 
 ## Usage
 1. Create your new application project
-2. Get **TidyHtml5Managed.dll** from [release page](RELEASES.md) 
-(or go [build yourself](Build.md)), and add reference to it from your application project
+2. Get **TidyHtml5Managed.dll** from [release page](/releases) 
+(or go [build yourself](BUILD.md)), and add reference to it from your application project
 3. Get **tidy.dll** from [release page](http://binaries.html-tidy.org/) 
 (or go [build yourself](https://github.com/htacg/tidy-html5/blob/master/README/README.md)), and put it in your application project's output folder
 4. Build and Run your project

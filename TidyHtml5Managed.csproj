@@ -90,7 +90,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="RELEASES.md" />
     <None Include="LICENSE.md" />
     <None Include="BUILD.md" />
     <None Include="README.md" />
