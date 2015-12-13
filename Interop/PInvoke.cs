@@ -28,52 +28,55 @@ namespace TidyManaged.Interop
 {
 	internal class PInvoke
 	{
-		[DllImport("libtidy.dll")]
+		[DllImport("tidy.dll")]
 		internal static extern IntPtr tidyCreate();
 
-		[DllImport("libtidy.dll")]
+		[DllImport("tidy.dll")]
 		internal static extern void tidyRelease(IntPtr tdoc);
 
-		[DllImport("libtidy.dll")]
+		[DllImport("tidy.dll")]
 		internal static extern IntPtr tidyReleaseDate();
 
-		[DllImport("libtidy.dll")]
+        [DllImport("tidy.dll")]
+        internal static extern IntPtr tidyLibraryVersion();
+
+        [DllImport("tidy.dll")]
 		internal static extern IntPtr tidyOptGetValue(IntPtr tdoc, TidyOptionId optId);
 
-		[DllImport("libtidy.dll")]
+		[DllImport("tidy.dll")]
 		internal static extern bool tidyOptSetValue(IntPtr tdoc, TidyOptionId optId, string val);
 
-		[DllImport("libtidy.dll")]
+		[DllImport("tidy.dll")]
 		internal static extern uint tidyOptGetInt(IntPtr tdoc, TidyOptionId optId);
 
-		[DllImport("libtidy.dll")]
+		[DllImport("tidy.dll")]
 		internal static extern bool tidyOptSetInt(IntPtr tdoc, TidyOptionId optId, uint val);
 
-		[DllImport("libtidy.dll")]
+		[DllImport("tidy.dll")]
 		internal static extern bool tidyOptGetBool(IntPtr tdoc, TidyOptionId optId);
 
-		[DllImport("libtidy.dll")]
+		[DllImport("tidy.dll")]
 		internal static extern bool tidyOptSetBool(IntPtr tdoc, TidyOptionId optId, bool val);
 
-		[DllImport("libtidy.dll")]
+		[DllImport("tidy.dll")]
 		internal static extern int tidyParseFile(IntPtr tdoc, string filename);
 
-		[DllImport("libtidy.dll")]
+		[DllImport("tidy.dll")]
 		internal static extern int tidyParseString(IntPtr tdoc, string content);
 
-		[DllImport("libtidy.dll")]
+		[DllImport("tidy.dll")]
 		internal static extern int tidyParseSource(IntPtr tdoc, ref TidyInputSource source);
 
-		[DllImport("libtidy.dll")]
+		[DllImport("tidy.dll")]
 		internal static extern int tidyCleanAndRepair(IntPtr tdoc);
 
-		[DllImport("libtidy.dll")]
+		[DllImport("tidy.dll")]
 		internal static extern int tidySaveFile(IntPtr tdoc, string filname);
 
-		[DllImport("libtidy.dll")]
+		[DllImport("tidy.dll")]
 		internal static extern int tidySaveString(IntPtr tdoc, IntPtr buffer, ref uint buflen);
 
-		[DllImport("libtidy.dll")]
+		[DllImport("tidy.dll")]
 		internal static extern int tidySaveSink(IntPtr tdoc, ref TidyOutputSink sink);
 
 		internal static string tidyOptGetValueString(IntPtr tdoc, TidyOptionId optId)

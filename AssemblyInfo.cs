@@ -25,12 +25,12 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("TidyManaged")]
-[assembly: AssemblyDescription("Managed .NET wrapper for the HTML Tidy library")]
+[assembly: AssemblyTitle("TidyHtml5Managed")]
+[assembly: AssemblyDescription("Managed .NET wrapper for the HTML 5 Tidy library")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Mark Beaton")]
-[assembly: AssemblyProduct("TidyManaged")]
-[assembly: AssemblyCopyright("Copyright © Mark Beaton 2009")]
+[assembly: AssemblyCompany("Frandi Dwi")]
+[assembly: AssemblyProduct("TidyHtml5Managed")]
+[assembly: AssemblyCopyright("Copyright © Frandi Dwi 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -1,5 +1,10 @@
 .DS_Store
-bin
-*.userprefs
 *.pidb
+*.suo
+*.user
+*.userprefs
 TestHarness
+UpgradeLog.htm
+/Backup
+/bin
+/obj

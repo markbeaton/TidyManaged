@@ -79,6 +79,7 @@ namespace TidyManaged
 		/// <summary>
 		/// Gets the release date of the underlying Tidy library.
 		/// </summary>
+        [Obsolete("Please use LibraryVersion instead")]
 		public DateTime ReleaseDate
 		{
 			get
@@ -91,12 +92,12 @@ namespace TidyManaged
 						string release = Marshal.PtrToStringAnsi(PInvoke.tidyReleaseDate());
 						if (release != null)
 						{
-							string[] tokens = release.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
-							if (tokens.Length >= 3)
-							{
-								DateTime.TryParseExact(tokens[0] + " " + tokens[1] + " " + tokens[2], "d MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out val);
-							}
-						}
+                            string[] tokens = release.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            if (tokens.Length >= 3)
+                            {
+                                DateTime.TryParseExact(tokens[0] + " " + tokens[1] + " " + tokens[2], "d MMMM yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out val);
+                            }
+                        }
 						_ReleaseDate = val;
 					}
 					return _ReleaseDate.Value;
@@ -104,12 +105,27 @@ namespace TidyManaged
 			}
 		}
 
-		#region HTML, XHTML, XML Options
+        /// <summary>
+        /// Gets the version of the underlying Tidy library
+        /// </summary>
+        public VersionInfo LibraryVersion
+        {
+            get
+            {
+                if (_libVersion == null)
+                    _libVersion = new VersionInfo(Marshal.PtrToStringAnsi(PInvoke.tidyLibraryVersion()));
 
-		/// <summary>
-		/// [add-xml-decl] Gets or sets whether Tidy should add the XML declaration when outputting XML or XHTML. Note that if the input already includes an &lt;?xml ... ?&gt; declaration then this option will be ignored. If the encoding for the output is different from "ascii", one of the utf encodings or "raw", the declaration is always added as required by the XML standard. Defaults to false.
-		/// </summary>
-		public bool AddXmlDeclaration
+                return _libVersion;
+            }
+        }
+        private VersionInfo _libVersion;
+
+        #region HTML, XHTML, XML Options
+
+        /// <summary>
+        /// [add-xml-decl] Gets or sets whether Tidy should add the XML declaration when outputting XML or XHTML. Note that if the input already includes an &lt;?xml ... ?&gt; declaration then this option will be ignored. If the encoding for the output is different from "ascii", one of the utf encodings or "raw", the declaration is always added as required by the XML standard. Defaults to false.
+        /// </summary>
+        public bool AddXmlDeclaration
 		{
 			get { return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyXmlDecl); }
 			set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyXmlDecl, value); }
@@ -138,22 +154,13 @@ namespace TidyManaged
 		/// </summary>
 		public bool AnchorAsName
 		{
-			// Not available before until 18 Jun 2008
 			get
 			{
-				if (this.ReleaseDate < new DateTime(2008, 6, 18))
-				{
-					Trace.WriteLine("AnchorAsName is not supported by your version of tidylib - ignoring.");
-					return true;
-				}
 				return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyAnchorAsName);
 			}
 			set
 			{
-				if (this.ReleaseDate < new DateTime(2008, 6, 18))
-					Trace.WriteLine("AnchorAsName is not supported by your version of tidylib - ignoring.");
-				else
-					PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyAnchorAsName, value);
+				PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyAnchorAsName, value);
 			}
 		}
 
@@ -183,6 +190,15 @@ namespace TidyManaged
 			get { return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyMakeClean); }
 			set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyMakeClean, value); }
 		}
+
+        /// <summary>
+        /// [coerce-endtags] Gets or sets whether Tidy should coerce a start tag into an end tag in cases where it looks like an end tag was probably intended. Defaults to true.
+        /// </summary>
+        public bool CoerceEndTags
+        {
+            get { return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyCoerceEndTags); }
+            set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyCoerceEndTags, value); }
+        }
 
 		/// <summary>
 		/// [css-prefix] Gets or sets the prefix that Tidy uses for styles rules. By default, "c" will be used.
@@ -215,6 +231,15 @@ namespace TidyManaged
 			get { return (DocTypeMode) PInvoke.tidyOptGetInt(this.handle, TidyOptionId.TidyDoctypeMode); }
 			set { PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidyDoctypeMode, (uint) value); }
 		}
+
+        /// <summary>
+        /// [drop-empty-elements] Gets or sets whether Tidy should discard empty elements. Defaults to true.
+        /// </summary>
+        public bool DropEmptyElements
+        {
+            get { return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyDropEmptyElems); }
+            set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyDropEmptyElems, value); }
+        }
 
 		/// <summary>
 		/// [drop-empty-paras] Gets or sets whether Tidy should discard empty paragraphs. Defaults to true.
@@ -296,6 +321,15 @@ namespace TidyManaged
 			get { return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyFixUri); }
 			set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyFixUri, value); }
 		}
+
+        /// <summary>
+        /// [gdoc] Gets or sets whether Tidy should enable specific behavior for cleaning up HTML exported from Google Docs. Defaults to false.
+        /// </summary>
+        public bool CleanGoogleDocs
+        {
+            get { return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyGDocClean); }
+            set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyGDocClean, value); }
+        }
 
 		/// <summary>
 		/// [hide-comments] Gets or sets whether Tidy should print out comments. Defaults to false.
@@ -387,27 +421,27 @@ namespace TidyManaged
 			set { PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidyMergeDivs, (uint) value); }
 		}
 
+        /// <summary>
+        /// [merge-emphasis] Gets or sets whether Tidy should merge nested &lt;b&gt; and &lt;i&gt; elements. Defaults to true.
+        /// </summary>
+        public bool MergeEmphasis
+        {
+            get { return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyMergeEmphasis); }
+            set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyMergeEmphasis, value); }
+        }
+
 		/// <summary>
 		/// [merge-spans] Gets or sets whether Tidy should merge nested &lt;span&gt; such as "&lt;span&gt;&lt;span;...&lt;/span&gt;&lt;/span&gt;". The algorithm is identical to the one used by MergeDivs. Can be used to modify behavior of the "MakeClean" option. Defaults to "Auto".
 		/// </summary>
 		public AutoBool MergeSpans
 		{
-			// Not available before until 13 Aug 2007
 			get
 			{
-				if (this.ReleaseDate < new DateTime(2007, 8, 13))
-				{
-					Trace.WriteLine("MergeSpans is not supported by your version of tidylib - ignoring.");
-					return AutoBool.No;
-				}
 				return (AutoBool) PInvoke.tidyOptGetInt(this.handle, TidyOptionId.TidyMergeSpans);
 			}
 			set
 			{
-				if (this.ReleaseDate < new DateTime(2007, 8, 13))
-					Trace.WriteLine("MergeSpans is not supported by your version of tidylib - ignoring.");
-				else
-					PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidyMergeSpans, (uint) value);
+				PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidyMergeSpans, (uint) value);
 			}
 		}
 
@@ -466,6 +500,15 @@ namespace TidyManaged
 			get { return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyNumEntities); }
 			set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyNumEntities, value); }
 		}
+
+        /// <summary>
+        /// [omit-optional-tags] Gets or sets whether Tidy should omit optional start tags and end tags when generating output. Defaults to false.
+        /// </summary>
+        public bool OmitOptionalTags
+        {
+            get { return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyOmitOptionalTags); }
+            set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyOmitOptionalTags, value); }
+        }
 
 		/// <summary>
 		/// [output-html] Gets or sets whether Tidy should generate pretty printed output, writing it as HTML. Defaults to false.
@@ -553,22 +596,30 @@ namespace TidyManaged
 		/// </summary>
 		public AutoBool OutputBodyOnly
 		{
-			// This option was changed from a Bool to an AutoBool on 24 May 2007.
 			get
 			{
-				if (this.ReleaseDate < new DateTime(2007, 5, 24))
+                if(this.LibraryVersion.IsSupportedVersion)
+                    return (AutoBool)PInvoke.tidyOptGetInt(this.handle, TidyOptionId.TidyBodyOnly);
+                else
 					return (PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyBodyOnly) ? AutoBool.Yes : AutoBool.No);
-				else
-					return (AutoBool) PInvoke.tidyOptGetInt(this.handle, TidyOptionId.TidyBodyOnly);
 			}
 			set
 			{
-				if (this.ReleaseDate < new DateTime(2007, 5, 24))
-					PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyBodyOnly, (value == AutoBool.Yes));
-				else
-					PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidyBodyOnly, (uint) value);
+                if (this.LibraryVersion.IsSupportedVersion)
+                    PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidyBodyOnly, (uint)value);
+                else
+                    PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyBodyOnly, (value == AutoBool.Yes));
 			}
 		}
+
+        /// <summary>
+        /// [skip-nested] Gets or sets whether Tidy should skip nested tags when parsing script and style data. The default is true.
+        /// </summary>
+        public bool SkipNestedTags
+        {
+            get { return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidySkipNested); }
+            set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidySkipNested, value); }
+        }
 
 		/// <summary>
 		/// [uppercase-attributes] Gets or sets whether Tidy should output attribute names in upper case. The default is false, which results in lower case attribute names, except for XML input, where the original case is preserved.
@@ -623,6 +674,15 @@ namespace TidyManaged
 			}
 		}
 
+        /// <summary>
+        /// [show-info] Gets or sets whether Tidy should display info-level messages. Defaults to true.
+        /// </summary>
+        public bool ShowInfo
+        {
+            get { return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyShowInfo); }
+            set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyShowInfo, value); }
+        }
+
 		/// <summary>
 		/// [show-warnings] Gets or sets whether Tidy should suppress warnings. This can be useful when a few errors are hidden in a flurry of warnings. Defaults to true.
 		/// </summary>
@@ -672,6 +732,15 @@ namespace TidyManaged
 			set { PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidyIndentSpaces, (uint) value); }
 		}
 
+        /// <summary>
+        /// [indent-with-tabs] Gets or sets whether Tidy should indent with tabs instead of spaces, assuming indent is yes. Defaults to false.
+        /// </summary>
+        public bool IndentWithTabs
+        {
+            get { return PInvoke.tidyOptGetBool(this.handle, TidyOptionId.TidyPPrintTabs); }
+            set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyPPrintTabs, value); }
+        }
+
 		/// <summary>
 		/// [markup] Gets or sets whether Tidy should generate a pretty printed version of the markup. Note that Tidy won't generate a pretty printed version if it finds significant errors (see ForceOutput). Defaults to true.
 		/// </summary>
@@ -697,22 +766,13 @@ namespace TidyManaged
 		/// </summary>
 		public SortStrategy AttributeSortType
 		{
-			// Not available before until 6 Jun 2007
 			get
 			{
-				if (this.ReleaseDate < new DateTime(2007, 6, 12))
-				{
-					Trace.WriteLine("AttributeSortType is not supported by your version of tidylib - ignoring.");
-					return SortStrategy.None;
-				}
 				return (SortStrategy) PInvoke.tidyOptGetInt(this.handle, TidyOptionId.TidySortAttributes);
 			}
 			set
 			{
-				if (this.ReleaseDate < new DateTime(2007, 6, 12))
-					Trace.WriteLine("AttributeSortType is not supported by your version of tidylib - ignoring.");
-				else
-					PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidySortAttributes, (uint) value);
+				PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidySortAttributes, (uint) value);
 			}
 		}
 
