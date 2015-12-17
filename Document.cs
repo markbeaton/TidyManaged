@@ -28,6 +28,7 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 using TidyManaged.Interop;
 
 namespace TidyManaged
@@ -1020,6 +1021,15 @@ namespace TidyManaged
 			cleaned = true;
 		}
 
+        /// <summary>
+        /// Parses input markup, executes configured cleanup, and repair operations asynchronously.
+        /// </summary>
+        /// <returns></returns>
+        public Task CleanAndRepairAsync()
+        {
+            return Task.Run(() => CleanAndRepair());
+        }
+
 		/// <summary>
 		/// Saves the processed markup to a string.
 		/// </summary>
@@ -1056,6 +1066,15 @@ namespace TidyManaged
 			return Encoding.UTF8.GetString(htmlBytes);
 		}
 
+        /// <summary>
+		/// Saves the processed markup to a string asynchronously.
+		/// </summary>
+		/// <returns>A string containing the processed markup.</returns>
+        public Task<string> SaveAsync()
+        {
+            return Task.FromResult(Save());
+        }
+
 		/// <summary>
 		/// Saves the processed markup to a file.
 		/// </summary>
@@ -1068,11 +1087,20 @@ namespace TidyManaged
 			PInvoke.tidySaveFile(this.handle, filePath);
 		}
 
-		/// <summary>
-		/// Saves the processed markup to the supplied stream.
+        /// <summary>
+		/// Saves the processed markup to a file asynchronously.
 		/// </summary>
-		/// <param name="stream">A <see cref="System.IO.Stream"/> to write the markup to.</param>
-		public void Save(Stream stream)
+		/// <param name="filePath">The full filesystem path of the file to save the markup to.</param>
+        public Task SaveAsync(string filePath)
+        {
+            return Task.Run(() => Save(filePath));
+        }
+
+        /// <summary>
+        /// Saves the processed markup to the supplied stream.
+        /// </summary>
+        /// <param name="stream">A <see cref="System.IO.Stream"/> to write the markup to.</param>
+        public void Save(Stream stream)
 		{
 			if (!cleaned)
 				throw new InvalidOperationException("CleanAndRepair() must be called before Save().");
@@ -1084,15 +1112,24 @@ namespace TidyManaged
 			if (fromString) this.OutputCharacterEncoding = tempEnc;
 		}
 
-		#endregion
+        /// <summary>
+        /// Saves the processed markup to the supplied stream asynchronously.
+        /// </summary>
+        /// <param name="stream">A <see cref="System.IO.Stream"/> to write the markup to.</param>
+        public Task SaveAsync(Stream stream)
+        {
+            return Task.Run(() => Save(stream));
+        }
 
-		#region Static Methods
+        #endregion
 
-		/// <summary>
-		/// Creates a new <see cref="Document"/> instance from a <see cref="System.String"/> containing HTML.
-		/// </summary>
-		/// <param name="htmlString">The HTML string to be processed.</param>
-		public static Document FromString(string htmlString)
+        #region Static Methods
+
+        /// <summary>
+        /// Creates a new <see cref="Document"/> instance from a <see cref="System.String"/> containing HTML.
+        /// </summary>
+        /// <param name="htmlString">The HTML string to be processed.</param>
+        public static Document FromString(string htmlString)
 		{
 			if (htmlString == null)
 				throw new ArgumentNullException("htmlString");
