@@ -22,8 +22,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -33,10 +31,10 @@ using TidyManaged.Interop;
 
 namespace TidyManaged
 {
-	/// <summary>
-	/// Represents an HTML document (or XML, XHTML) to be processed by Tidy.
-	/// </summary>
-	public class Document : IDisposable
+    /// <summary>
+    /// Represents an HTML document (or XML, XHTML) to be processed by Tidy.
+    /// </summary>
+    public class Document : IDisposable
 	{
 		#region Constructors
 
