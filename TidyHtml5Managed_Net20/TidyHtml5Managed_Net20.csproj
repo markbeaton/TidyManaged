@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C9FF4F09-BF5E-4A10-B610-1DA0D2BD30DA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TidyManaged</RootNamespace>
+    <AssemblyName>TidyHTML5Managed</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SUPPORT_UTF16_ENCODINGS;SUPPORT_ASIAN_ENCODINGS;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\TidyHtml5Managed\AccessibilityCheckLevel.cs">
+      <Link>AccessibilityCheckLevel.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\AutoBool.cs">
+      <Link>AutoBool.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\DocTypeMode.cs">
+      <Link>DocTypeMode.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\Document.cs">
+      <Link>Document.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\EncodingType.cs">
+      <Link>EncodingType.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\InputSource.cs">
+      <Link>InputSource.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\Interop\PInvoke.cs">
+      <Link>Interop\PInvoke.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\Interop\TidyEOFFunc.cs">
+      <Link>Interop\TidyEOFFunc.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\Interop\TidyGetByteFunc.cs">
+      <Link>Interop\TidyGetByteFunc.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\Interop\TidyInputSource.cs">
+      <Link>Interop\TidyInputSource.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\Interop\TidyOptionId.cs">
+      <Link>Interop\TidyOptionId.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\Interop\TidyOutputSink.cs">
+      <Link>Interop\TidyOutputSink.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\Interop\TidyPutByteFunc.cs">
+      <Link>Interop\TidyPutByteFunc.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\Interop\TidyUngetByteFunc.cs">
+      <Link>Interop\TidyUngetByteFunc.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\NewlineType.cs">
+      <Link>NewlineType.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\OutputSink.cs">
+      <Link>OutputSink.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\RepeatedAttributeMode.cs">
+      <Link>RepeatedAttributeMode.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\SortStrategy.cs">
+      <Link>SortStrategy.cs</Link>
+    </Compile>
+    <Compile Include="..\TidyHtml5Managed\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
