@@ -1,7 +1,8 @@
-﻿using System.Linq;
-
-namespace TidyManaged
+﻿namespace TidyManaged
 {
+    /// <summary>
+    /// VersionInfo class
+    /// </summary>
     public class VersionInfo
     {
         #region Private Variables
@@ -10,9 +11,7 @@ namespace TidyManaged
         private const int MAJOR = 0;
         private const int MINOR = 1;
         private const int PATCH = 2;
-
-        private readonly int[] _supportedVersion = MIN_SUPPORTED_VERSION.Split('.').Select(v => int.Parse(v)).ToArray();
-
+        
         private int[] _version;
         #endregion
 
@@ -110,8 +109,8 @@ namespace TidyManaged
         public static VersionInfo MinSupported
         {
             get { return new VersionInfo(MIN_SUPPORTED_VERSION); }
-        } 
-
+        }
+        
         #endregion
     }
 }

@@ -26,7 +26,6 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using TidyManaged.Interop;
 
 namespace TidyManaged
@@ -34,9 +33,9 @@ namespace TidyManaged
     /// <summary>
     /// Represents an HTML document (or XML, XHTML) to be processed by Tidy.
     /// </summary>
-    public class Document : IDisposable
+    public partial class Document : IDisposable
 	{
-		#region Constructors
+        #region Constructors
 
 		Document()
 		{
@@ -50,17 +49,16 @@ namespace TidyManaged
 			this.htmlString = htmlString;
 			this.fromString = true;
 		}
-
-
+        
 		Document(Stream stream)
 			: this()
 		{
 			this.stream = stream;
 		}
 
-		#endregion
+        #endregion
 
-		#region Fields
+        #region Fields
 
 		IntPtr handle;
 		Stream stream;
@@ -69,9 +67,9 @@ namespace TidyManaged
 		bool disposed;
 		bool cleaned;
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
 		DateTime? _ReleaseDate;
 		static readonly object releaseDateLock = new object();
@@ -647,9 +645,9 @@ namespace TidyManaged
 			set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyWord2000, value); }
 		}
 
-		#endregion
+        #endregion
 
-		#region Diagnostics Options
+        #region Diagnostics Options
 
 		/// <summary>
 		/// [accessibility-check] Gets or sets the level of accessibility checking, if any, that Tidy should do. Defaults to TidyClassic.
@@ -691,9 +689,9 @@ namespace TidyManaged
 			set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyShowWarnings, value); }
 		}
 
-		#endregion
+        #endregion
 
-		#region Pretty Print Options
+        #region Pretty Print Options
 
 		/// <summary>
 		/// [break-before-br] Gets or sets whether Tidy should output a line break before each &lt;BR&gt; element. Defaults to false.
@@ -856,9 +854,9 @@ namespace TidyManaged
 			set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyWrapSection, value); }
 		}
 
-		#endregion
+        #endregion
 
-		#region Character Encoding Options
+        #region Character Encoding Options
 
 		/// <summary>
 		/// [ascii-chars] Gets or sets whether &amp;emdash;, &amp;rdquo;, and other named character entities are downgraded to their closest ascii equivalents when the "MakeClean" option is set to true. Defaults to false.
@@ -916,9 +914,9 @@ namespace TidyManaged
 			set { PInvoke.tidyOptSetInt(this.handle, TidyOptionId.TidyOutCharEncoding, (uint) value); }
 		}
 
-		#endregion
+        #endregion
 
-		#region Miscellaneous Options
+        #region Miscellaneous Options
 
 		/// <summary>
 		/// [error-file] Gets or sets the error file Tidy uses for errors and warnings. Normally errors and warnings are output to "stderr". Defaults to null.
@@ -992,11 +990,11 @@ namespace TidyManaged
 			set { PInvoke.tidyOptSetBool(this.handle, TidyOptionId.TidyWriteBack, value); }
 		}
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
 		/// <summary>
 		/// Parses input markup, and executes configured cleanup and repair operations.
@@ -1019,15 +1017,6 @@ namespace TidyManaged
 			cleaned = true;
 		}
 
-        /// <summary>
-        /// Parses input markup, executes configured cleanup, and repair operations asynchronously.
-        /// </summary>
-        /// <returns></returns>
-        public Task CleanAndRepairAsync()
-        {
-            return Task.Run(() => CleanAndRepair());
-        }
-
 		/// <summary>
 		/// Saves the processed markup to a string.
 		/// </summary>
@@ -1037,12 +1026,15 @@ namespace TidyManaged
 			if (!cleaned)
 				throw new InvalidOperationException("CleanAndRepair() must be called before Save().");
 
-			var tempEnc = this.CharacterEncoding;
-			var tempBOM = this.OutputByteOrderMark;
+			var tempEnc = this.CharacterEncoding;			
 			this.OutputCharacterEncoding = EncodingType.Utf8;
-			this.OutputByteOrderMark = AutoBool.No;
 
-			uint bufferLength = 1;
+#if SUPPORT_UTF16_ENCODINGS
+            var tempBOM = this.OutputByteOrderMark;
+            this.OutputByteOrderMark = AutoBool.No;
+#endif
+
+            uint bufferLength = 1;
 			byte[] htmlBytes;
 			GCHandle handle = new GCHandle();
 			do
@@ -1060,18 +1052,13 @@ namespace TidyManaged
 			handle.Free();
 
 			this.OutputCharacterEncoding = tempEnc;
+
+#if SUPPORT_UTF16_ENCODINGS
 			this.OutputByteOrderMark = tempBOM;
+#endif
+
 			return Encoding.UTF8.GetString(htmlBytes);
 		}
-
-        /// <summary>
-		/// Saves the processed markup to a string asynchronously.
-		/// </summary>
-		/// <returns>A string containing the processed markup.</returns>
-        public Task<string> SaveAsync()
-        {
-            return Task.FromResult(Save());
-        }
 
 		/// <summary>
 		/// Saves the processed markup to a file.
@@ -1082,17 +1069,11 @@ namespace TidyManaged
 			if (!cleaned)
 				throw new InvalidOperationException("CleanAndRepair() must be called before Save().");
 
+            if (string.IsNullOrEmpty(filePath))
+                throw new ArgumentNullException(nameof(filePath));
+            
 			PInvoke.tidySaveFile(this.handle, filePath);
 		}
-
-        /// <summary>
-		/// Saves the processed markup to a file asynchronously.
-		/// </summary>
-		/// <param name="filePath">The full filesystem path of the file to save the markup to.</param>
-        public Task SaveAsync(string filePath)
-        {
-            return Task.Run(() => Save(filePath));
-        }
 
         /// <summary>
         /// Saves the processed markup to the supplied stream.
@@ -1103,21 +1084,15 @@ namespace TidyManaged
 			if (!cleaned)
 				throw new InvalidOperationException("CleanAndRepair() must be called before Save().");
 
+            if(stream == null)
+                throw new ArgumentNullException(nameof(stream));
+
 			EncodingType tempEnc = this.OutputCharacterEncoding;
 			if (fromString) this.OutputCharacterEncoding = EncodingType.Utf8;
 			OutputSink sink = new OutputSink(stream);
 			PInvoke.tidySaveSink(this.handle, ref sink.TidyOutputSink);
 			if (fromString) this.OutputCharacterEncoding = tempEnc;
 		}
-
-        /// <summary>
-        /// Saves the processed markup to the supplied stream asynchronously.
-        /// </summary>
-        /// <param name="stream">A <see cref="System.IO.Stream"/> to write the markup to.</param>
-        public Task SaveAsync(Stream stream)
-        {
-            return Task.Run(() => Save(stream));
-        }
 
         #endregion
 
@@ -1129,8 +1104,8 @@ namespace TidyManaged
         /// <param name="htmlString">The HTML string to be processed.</param>
         public static Document FromString(string htmlString)
 		{
-			if (htmlString == null)
-				throw new ArgumentNullException("htmlString");
+            if (htmlString == null)
+                throw new ArgumentNullException(nameof(htmlString));
 
 			return new Document(htmlString);
 		}
@@ -1141,6 +1116,9 @@ namespace TidyManaged
 		/// <param name="filePath">The full filesystem path of the HTML document to be processed.</param>
 		public static Document FromFile(string filePath)
 		{
+            if (string.IsNullOrEmpty(filePath))
+                throw new ArgumentNullException(nameof(filePath));
+            
 			if (!File.Exists(filePath))
 				throw new FileNotFoundException("File not found.", filePath);
 
@@ -1153,8 +1131,9 @@ namespace TidyManaged
 		/// <param name="stream">A <see cref="System.IO.Stream"/> instance containing the HTML document to be processed.</param>
 		public static Document FromStream(Stream stream)
 		{
-			if (stream == null)
-				throw new ArgumentNullException("stream");
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
+
 			if (!stream.CanRead)
 				throw new ArgumentException("Stream must be readable.");
 			if (!stream.CanSeek)
@@ -1163,9 +1142,9 @@ namespace TidyManaged
 			return new Document(stream);
 		}
 
-		#endregion
+        #endregion
 
-		#region IDisposable Members
+        #region IDisposable Members
 
 		/// <summary>
 		/// Disposes of all unmanaged resources.
@@ -1195,6 +1174,6 @@ namespace TidyManaged
 			}
 		}
 
-		#endregion
+        #endregion
 	}
 }

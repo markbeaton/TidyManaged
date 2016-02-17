@@ -7,6 +7,6 @@ TestHarness
 UpgradeLog.htm
 /.vs/
 /Backup
-/bin
-/obj
+/**/bin/
+/**/obj/
 /WebEssentials2015-Settings.json
