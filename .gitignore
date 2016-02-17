@@ -5,6 +5,8 @@
 *.userprefs
 TestHarness
 UpgradeLog.htm
+/.vs/
 /Backup
 /bin
 /obj
+/WebEssentials2015-Settings.json
