@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TidyHtml5Managed")]
-[assembly: AssemblyDescription("Managed .NET wrapper for the HTML 5 Tidy library")]
+[assembly: AssemblyTitle("TidyHtml5Managed (.Net 4.0)")]
+[assembly: AssemblyDescription("Managed .NET (v4.0) wrapper for the HTML 5 Tidy library")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Frandi Dwi")]
 [assembly: AssemblyProduct("TidyHtml5Managed")]

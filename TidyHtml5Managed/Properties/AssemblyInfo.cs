@@ -25,8 +25,8 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("TidyHtml5Managed")]
-[assembly: AssemblyDescription("Managed .NET wrapper for the HTML 5 Tidy library")]
+[assembly: AssemblyTitle("TidyHtml5Managed (.Net 4.6)")]
+[assembly: AssemblyDescription("Managed .NET (v4.6) wrapper for the HTML 5 Tidy library")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Frandi Dwi")]
 [assembly: AssemblyProduct("TidyHtml5Managed")]
