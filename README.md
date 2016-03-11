@@ -19,44 +19,42 @@ Minimum version of the supported Tidy HTML5 library is [5.0.0](https://github.co
 1. Create your new application project
 2. Install TidyHtml5Managed package from NuGet
 
-    '''
-    Install-Package TidyHtml5Managed
-    '''
-
+    `Install-Package TidyHtml5Managed`
+    
 3. Build and Run your project
 
 ### Code Sample
 
 The following code is the sample of using the library in a Console Application.
 
-    '''c#
-    using System;
-    using TidyManaged;
-    
-    namespace TidyHtml5.ConsoleApp
+```C#
+using System;
+using TidyManaged;
+
+namespace TidyHtml5.ConsoleApp
+{
+    class Program
     {
-        class Program
+        static void Main(string[] args)
         {
-            static void Main(string[] args)
+            string dirtyHtml = "<p>Test";
+            Console.WriteLine("Dirty HTML: " + dirtyHtml);
+
+            using (Document doc = Document.FromString(dirtyHtml))
             {
-                string dirtyHtml = "<p>Test";
-                Console.WriteLine("Dirty HTML: " + dirtyHtml);
-    
-                using (Document doc = Document.FromString(dirtyHtml))
-                {
-                    doc.OutputBodyOnly = AutoBool.Yes;
-                    doc.Quiet = true;
-                    doc.CleanAndRepair();
-                    string cleanHtml = doc.Save();
-    
-                    Console.WriteLine("Clean HTML: " + cleanHtml);
-                }
-    
-                Console.ReadKey();
+                doc.OutputBodyOnly = AutoBool.Yes;
+                doc.Quiet = true;
+                doc.CleanAndRepair();
+                string cleanHtml = doc.Save();
+
+                Console.WriteLine("Clean HTML: " + cleanHtml);
             }
+
+            Console.ReadKey();
         }
     }
-    '''
+}
+```
 
 And here is the output:
 
