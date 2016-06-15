@@ -1,5 +1,12 @@
 .DS_Store
-bin
-*.userprefs
 *.pidb
+*.suo
+*.user
+*.userprefs
 TestHarness
+UpgradeLog.htm
+/.vs/
+/Backup
+/**/bin/
+/**/obj/
+/WebEssentials2015-Settings.json

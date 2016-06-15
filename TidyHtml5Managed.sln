@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TidyHtml5Managed", "TidyHtml5Managed\TidyHtml5Managed.csproj", "{D799633D-00EF-437C-B158-315557D930FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TidyHtml5Managed_Net35", "TidyHtml5Managed_Net35\TidyHtml5Managed_Net35.csproj", "{94B637BE-23DC-403D-9369-A40FA2080808}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TidyHtml5Managed_Net45", "TidyHtml5Managed_Net45\TidyHtml5Managed_Net45.csproj", "{5FE3954B-6430-4B35-B5C7-5B32C515FCCD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TidyHtml5Managed_Net40", "TidyHtml5Managed_Net40\TidyHtml5Managed_Net40.csproj", "{840D7069-1605-4DC3-858B-A8F249FEDF4A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TidyHtml5Managed_Net20", "TidyHtml5Managed_Net20\TidyHtml5Managed_Net20.csproj", "{C9FF4F09-BF5E-4A10-B610-1DA0D2BD30DA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D799633D-00EF-437C-B158-315557D930FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D799633D-00EF-437C-B158-315557D930FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D799633D-00EF-437C-B158-315557D930FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D799633D-00EF-437C-B158-315557D930FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94B637BE-23DC-403D-9369-A40FA2080808}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94B637BE-23DC-403D-9369-A40FA2080808}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94B637BE-23DC-403D-9369-A40FA2080808}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94B637BE-23DC-403D-9369-A40FA2080808}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FE3954B-6430-4B35-B5C7-5B32C515FCCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FE3954B-6430-4B35-B5C7-5B32C515FCCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FE3954B-6430-4B35-B5C7-5B32C515FCCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FE3954B-6430-4B35-B5C7-5B32C515FCCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{840D7069-1605-4DC3-858B-A8F249FEDF4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{840D7069-1605-4DC3-858B-A8F249FEDF4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{840D7069-1605-4DC3-858B-A8F249FEDF4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{840D7069-1605-4DC3-858B-A8F249FEDF4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9FF4F09-BF5E-4A10-B610-1DA0D2BD30DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9FF4F09-BF5E-4A10-B610-1DA0D2BD30DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9FF4F09-BF5E-4A10-B610-1DA0D2BD30DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9FF4F09-BF5E-4A10-B610-1DA0D2BD30DA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = TidyManaged.csproj
+	EndGlobalSection
+EndGlobal
